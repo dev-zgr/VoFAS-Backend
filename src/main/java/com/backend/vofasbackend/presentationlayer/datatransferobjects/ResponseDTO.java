@@ -20,7 +20,7 @@ public class ResponseDTO {
 
     @Schema(
             description = "Status message in the response",
-            example = "Department created successfully"
+            example = "kiosk created successfully"
     )
     private String statusMessage;
 

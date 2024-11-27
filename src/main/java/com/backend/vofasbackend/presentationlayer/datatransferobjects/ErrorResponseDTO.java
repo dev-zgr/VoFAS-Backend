@@ -17,7 +17,7 @@ public class ErrorResponseDTO {
 
     @Schema(
             description = "API path invoked by client",
-            example = "/api/v1/departments"
+            example = "/api/v1/feedback"
     )
     private  String apiPath;
 
@@ -25,11 +25,11 @@ public class ErrorResponseDTO {
             description = "Error code representing the error happened",
             example = "BAD_REQUEST"
     )
-    private HttpStatus errorCode;
+    private String errorCode;
 
     @Schema(
             description = "Error message representing the error happened",
-            example = "Department name can not be a null or empty"
+            example = "kiosk name can not be a null or empty"
     )
     private  String errorMessage;
 

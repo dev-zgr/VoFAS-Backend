@@ -5,11 +5,14 @@ package com.backend.vofasbackend.datalayer.enums;
  * This enum tracks the current operational state of a kiosk.
  * It is used to manage kiosk lifecycle and authentication status.
  *
- * - ACTIVE: The kiosk is fully operational and ready for use.
- * - PENDING_AUTHENTICATION: The kiosk is waiting for authentication to become active.
- * - DISABLED: The kiosk is no longer operational or has been disabled for some reason.
+ * <p>The endpoints in this controller allow for actions such as:</p>
+ * <ul>
+ *     <li>ACTIVE: The kiosk is fully operational and ready for use.</li>
+ *      <li>PENDING_AUTHENTICATION: The kiosk is waiting for authentication to become active.</li>
+ *      <li>DISABLED: The kiosk is no longer operational or has been disabled for some reason.</li>
+ *  </ul>
  */
-public enum KioskState {
+public enum KioskStateEnum {
     /**
      * Kiosk is active and fully functional.
      */
