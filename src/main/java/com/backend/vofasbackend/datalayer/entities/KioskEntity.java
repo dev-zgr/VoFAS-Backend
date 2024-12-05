@@ -2,8 +2,7 @@ package com.backend.vofasbackend.datalayer.entities;
 
 import com.backend.vofasbackend.datalayer.enums.KioskStateEnum;
 import jakarta.persistence.*;
-import jakarta.validation.constraints.Max;
-import jakarta.validation.constraints.Min;
+import jakarta.validation.constraints.Pattern;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
@@ -59,9 +58,8 @@ public class KioskEntity {
      * This key is used to match kiosk with the system.
      */
     @Column(name = "kiosk_key", nullable = false, unique = true, updatable = false)
-    @Max(999999)
-    @Min(0)
-    private Integer kioskKey;
+    @Pattern(regexp = "^[0-9]{3}-[0-9]{3}$", message = "Kiosk key must be in the format 333-333 (3 digits - 3 digits).")
+    private String kioskKey;
 
     /**
      * List of feedback entities associated with the kiosk.

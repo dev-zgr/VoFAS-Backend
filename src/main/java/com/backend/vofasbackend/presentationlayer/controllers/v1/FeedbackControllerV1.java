@@ -3,6 +3,7 @@ package com.backend.vofasbackend.presentationlayer.controllers.v1;
 import com.backend.vofasbackend.contants.FeedbackConstants;
 import com.backend.vofasbackend.datalayer.entities.FeedbackEntity;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ErrorResponseDTO;
+import com.backend.vofasbackend.presentationlayer.datatransferobjects.FeedbackDTO;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ResponseDTO;
 import com.backend.vofasbackend.servicelayer.interfaces.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
@@ -161,9 +162,16 @@ public class FeedbackControllerV1 {
     @GetMapping(value = "/feedback/{feedbackID}", produces = MediaType.APPLICATION_JSON_VALUE)
     public ResponseEntity<Object> getFeedbackByFeedbackID(
             @Parameter(description = "The unique identifier of the feedback", example = "123")
-            @PathVariable Long feedbackID
+            @PathVariable Long feedbackID,
+            @Parameter(description = "True if kiosk details requested in feedback", example = "True")
+            @RequestParam(name = "get-source", defaultValue = "false") boolean getFeedbackSource,
+            @Parameter(description = "True if kiosk details requested in feedback", example = "True")
+            @RequestParam(name = "get-token", defaultValue = "false") boolean getValidation
     ) {
-        return null;
+        FeedbackDTO feedbackDTO = feedbackService.getFeedbackById(feedbackID,getFeedbackSource,getValidation );
+        return ResponseEntity
+                .status(HttpStatus.OK)
+                .body(feedbackDTO);
     }
 
 

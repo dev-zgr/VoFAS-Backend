@@ -46,15 +46,9 @@ public class KioskDTO {
     private String kioskState;
 
     /**
-     * The unique key for the kiosk.
+     * Authentication key for kiosk
      */
-    @Schema(description = "The unique key for the kiosk.", example = "cfd7d2b8-88f2-437f-9ab1-c3de47b5d0a0")
+    @Schema(description = "kiosk key", example = "434-655", pattern = "^[0-9]{3}-[0-9]{3}$")
     private String kioskKey;
 
-    /**
-     * List of validation tokens associated with the kiosk.
-     */
-    @Schema(description = "List of validation tokens associated with the kiosk.", example = "[]")
-    @JsonManagedReference
-    private List<ValidationTokenDTO> validationTokens;
 }

@@ -6,9 +6,15 @@ import com.backend.vofasbackend.datalayer.entities.TranscriptionEntity;
 import com.backend.vofasbackend.datalayer.enums.FeedbackStateEnum;
 import com.backend.vofasbackend.datalayer.repositories.FeedbackRepository;
 import com.backend.vofasbackend.datalayer.repositories.TranscriptionRepository;
+import com.backend.vofasbackend.exceptions.exceptions.ResourceNotFoundException;
 import com.backend.vofasbackend.exceptions.exceptions.UnsupportedMediaTypeException;
+import com.backend.vofasbackend.presentationlayer.datatransferobjects.*;
 import com.backend.vofasbackend.servicelayer.interfaces.FeedbackService;
+import com.backend.vofasbackend.servicelayer.mappers.FeedbackMapper;
+import com.backend.vofasbackend.servicelayer.mappers.KioskMapper;
+import com.backend.vofasbackend.servicelayer.mappers.ValidationTokenMapper;
 import jakarta.annotation.PostConstruct;
+import jakarta.transaction.Transactional;
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
 import org.springframework.ai.audio.transcription.AudioTranscriptionResponse;
 import org.springframework.ai.openai.OpenAiAudioTranscriptionModel;
@@ -173,6 +179,28 @@ public class FeedbackServiceImpl implements FeedbackService {
         }
     }
 
+    @Override
+    @Transactional
+    public FeedbackDTO getFeedbackById(Long feedbackID, boolean getFeedbackSource, boolean getValidation) throws ResourceNotFoundException {
+        Optional<FeedbackEntity> feedback = feedbackRepository.getFeedbackEntityByFeedbackId(feedbackID);
+        if(feedback.isPresent()){
+            FeedbackEntity feedbackEntity = feedback.get();
+            FeedbackDTO feedbackDTO = FeedbackMapper.mapFeedbackEntityToFeedbackDTO(feedbackEntity, new FeedbackDTO(), new TranscriptionDTO(), new SentimentAnalysisDTO());
+            if(getFeedbackSource && feedbackEntity.getFeedbackSource() != null){
+                feedbackDTO.setFeedbackSource(KioskMapper.mapKioskEntityToKioskDTO(feedbackEntity.getFeedbackSource(), new KioskDTO()));
+            }
+            if(getValidation && feedbackEntity.getValidationToken() != null){
+                feedbackDTO.setValidationTokenDTO(ValidationTokenMapper.mapValidationTokenEntityToValidationTokenDTO(feedbackEntity.getValidationToken(), new ValidationTokenDTO()));
+            }
+            return feedbackDTO;
+        }else{
+            throw new ResourceNotFoundException(
+                    FeedbackEntity.class.getTypeName(),
+                    "feedbackID",
+                    feedbackID.toString()
+            );
+        }
+    }
 
 
 }

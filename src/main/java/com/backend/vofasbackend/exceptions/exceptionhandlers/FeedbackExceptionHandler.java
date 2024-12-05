@@ -1,5 +1,6 @@
 package com.backend.vofasbackend.exceptions.exceptionhandlers;
 
+import com.backend.vofasbackend.exceptions.exceptions.ResourceNotFoundException;
 import com.backend.vofasbackend.exceptions.exceptions.UnsupportedMediaTypeException;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ErrorResponseDTO;
 import org.springframework.http.HttpStatus;
@@ -24,6 +25,18 @@ public class FeedbackExceptionHandler extends ResponseEntityExceptionHandler {
                 LocalDateTime.now()
         );
         return new ResponseEntity<>(errorResponseDTO, HttpStatus.UNSUPPORTED_MEDIA_TYPE);
+    }
+
+    @ExceptionHandler(ResourceNotFoundException.class)
+    public ResponseEntity<ErrorResponseDTO> handleResourceNotFoundException(ResourceNotFoundException exception,
+                                                                            WebRequest webRequest) {
+        ErrorResponseDTO errorResponseDTO = new ErrorResponseDTO(
+                webRequest.getDescription(false),
+                HttpStatus.NOT_FOUND.toString(),
+                exception.getMessage(),
+                LocalDateTime.now()
+        );
+        return new ResponseEntity<>(errorResponseDTO, HttpStatus.NOT_FOUND);
     }
 
     @ExceptionHandler(Exception.class)

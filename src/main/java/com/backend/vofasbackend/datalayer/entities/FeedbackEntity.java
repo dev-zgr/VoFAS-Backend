@@ -73,7 +73,7 @@ public class FeedbackEntity {
      * The kiosk where the feedback was collected.
      * This is a reference to the kiosk entity that the feedback belongs to.
      */
-    @ManyToOne(fetch = FetchType.EAGER)
+    @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "kiosk_id")
     private KioskEntity feedbackSource;
 
@@ -82,7 +82,7 @@ public class FeedbackEntity {
      * The validation token associated with this feedback.
      * The validation token is used to authenticate the feedback submission.
      */
-    @OneToOne(fetch = FetchType.EAGER)
+    @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "validation_token_id")
     private ValidationTokenEntity validationToken;
 

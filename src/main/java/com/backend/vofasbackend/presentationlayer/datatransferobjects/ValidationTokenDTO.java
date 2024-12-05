@@ -1,6 +1,7 @@
 package com.backend.vofasbackend.presentationlayer.datatransferobjects;
 
 import com.fasterxml.jackson.annotation.JsonBackReference;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import io.swagger.v3.oas.annotations.media.Schema;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -30,9 +31,9 @@ public class ValidationTokenDTO {
     /**
      * The ID of the kiosk associated with the validation token.
      */
-    @Schema(description = "The ID of the kiosk associated with the validation token.", example = "1")
+    @Schema(description = "The ID of the kiosk associated with the validation token.")
     @JsonBackReference
-    private KioskDTO kiosk;
+    private Long kiosk;
 
     /**
      * The state of the validation token.
@@ -44,19 +45,20 @@ public class ValidationTokenDTO {
      * The timestamp when the validation token was created.
      */
     @Schema(description = "The timestamp when the validation token was created.", example = "2024-11-01T12:00:00")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime tokenCreateAt;
 
     /**
      * The timestamp when the validation token was used.
      */
     @Schema(description = "The timestamp when the validation token was used.", example = "2024-11-01T15:30:00")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime tokenUsedAt;
 
     /**
      * The ID of the feedback associated with this validation token.
      */
     @Schema(description = "The ID of the feedback associated with this validation token.", example = "123")
-    @JsonBackReference
-    private FeedbackDTO feedback;
+    private Long feedback;
 }
 

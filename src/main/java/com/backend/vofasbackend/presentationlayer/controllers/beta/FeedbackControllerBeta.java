@@ -2,10 +2,7 @@ package com.backend.vofasbackend.presentationlayer.controllers.beta;
 
 import com.backend.vofasbackend.contants.FeedbackConstants;
 import com.backend.vofasbackend.datalayer.enums.ValidationTokenStateEnum;
-import com.backend.vofasbackend.presentationlayer.datatransferobjects.ErrorResponseDTO;
-import com.backend.vofasbackend.presentationlayer.datatransferobjects.FeedbackDTO;
-import com.backend.vofasbackend.presentationlayer.datatransferobjects.ResponseDTO;
-import com.backend.vofasbackend.presentationlayer.datatransferobjects.ValidationTokenDTO;
+import com.backend.vofasbackend.presentationlayer.datatransferobjects.*;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -300,10 +297,13 @@ public class FeedbackControllerBeta {
     private FeedbackDTO createFeedback(Long feedbackId, String transcription, String feedbackState, Long kioskId, ValidationTokenDTO validationToken) {
         FeedbackDTO feedbackDTO = new FeedbackDTO();
         feedbackDTO.setFeedbackId(feedbackId);
-        feedbackDTO.setTranscription(transcription);
+        TranscriptionDTO transcriptionDTO = new TranscriptionDTO();
+        transcriptionDTO.setTranscription(transcription);
+        feedbackDTO.setTranscriptionDTO(transcriptionDTO);
         feedbackDTO.setFeedbackState(feedbackState);
-        feedbackDTO.setKioskId(kioskId);
-        feedbackDTO.setValidationToken(validationToken);
+        KioskDTO kioskDTO = new KioskDTO();
+        kioskDTO.setKioskId(kioskId);
+        feedbackDTO.setValidationTokenDTO(new ValidationTokenDTO());
         return feedbackDTO;
     }
 

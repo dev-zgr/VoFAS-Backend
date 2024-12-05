@@ -10,7 +10,7 @@ import org.springframework.stereotype.Component;
 
 @Component
 public class OpenAIConfiguration {
-    @Value("${openai.apiKey}")
+    @Value("$openai.apiKey")
     private String apiKey;
 
     @Bean
