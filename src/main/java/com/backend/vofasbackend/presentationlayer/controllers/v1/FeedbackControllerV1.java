@@ -1,7 +1,10 @@
 package com.backend.vofasbackend.presentationlayer.controllers.v1;
 
+import com.backend.vofasbackend.contants.FeedbackConstants;
+import com.backend.vofasbackend.datalayer.entities.FeedbackEntity;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ErrorResponseDTO;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ResponseDTO;
+import com.backend.vofasbackend.servicelayer.interfaces.FeedbackService;
 import io.swagger.v3.oas.annotations.Operation;
 import io.swagger.v3.oas.annotations.Parameter;
 import io.swagger.v3.oas.annotations.media.Content;
@@ -9,10 +12,12 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.multipart.MultipartFile;
+import reactor.core.publisher.Flux;
 
 import java.util.UUID;
 
@@ -46,6 +51,12 @@ import java.util.UUID;
 @CrossOrigin(origins = "${VoFAS.crossorigin.url}")
 public class FeedbackControllerV1 {
 
+    private FeedbackService feedbackService;
+
+    public FeedbackControllerV1(FeedbackService feedbackService) {
+        this.feedbackService = feedbackService;
+    }
+
     @Operation(
             summary = "This API endpoint streams the latest processed feedbacks",
             description = "Streams the latest feedbacks"
@@ -73,8 +84,8 @@ public class FeedbackControllerV1 {
 
     })
     @GetMapping(value = "/feedback/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<Object> streamFeedbacks() {
-        return null;
+    public Flux<FeedbackEntity> streamFeedbacks() {
+        return feedbackService.getFeedbackStream();
     }
 
     @Operation(
@@ -156,20 +167,12 @@ public class FeedbackControllerV1 {
     }
 
 
-
     @Operation(
             summary = "Upload feedback file for processing",
             description = "This API endpoint allows the user to upload a file (e.g., MP4) associated with feedback." +
                     " The file is processed and associated with the feedback record identified by the `validation-token`."
     )
     @ApiResponses({
-            @ApiResponse(
-                    responseCode = "401",
-                    description = "Unauthorized. The request does not include valid authentication credentials (e.g., missing or invalid authorization token).",
-                    content = @Content(
-                            schema = @Schema(implementation = ErrorResponseDTO.class)
-                    )
-            ),
             @ApiResponse(
                     responseCode = "403",
                     description = "Forbidden. The user does not have permission to upload files for feedback, possibly due to insufficient roles or invalid `validation-token`.",
@@ -204,7 +207,12 @@ public class FeedbackControllerV1 {
             @PathVariable(name = "validation-token") UUID validationToken,
             @RequestPart(name = "file") MultipartFile file
     ) {
-        return null;
+            feedbackService.saveFeedback(file, validationToken).subscribe();
+            ResponseDTO responseDTO = new ResponseDTO(FeedbackConstants.STATUS_201, FeedbackConstants.MESSAGE_201);
+            return ResponseEntity
+                    .status(HttpStatus.CREATED)
+                    .body(responseDTO);
     }
+
 
 }

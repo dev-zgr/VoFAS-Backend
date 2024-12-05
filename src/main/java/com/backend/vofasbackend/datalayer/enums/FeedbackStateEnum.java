@@ -1,27 +1,41 @@
 package com.backend.vofasbackend.datalayer.enums;
 
 /**
- * Enum representing the possible states of feedback.
- * This enum categorizes feedback into three distinct states based on the sentiment of the feedback.
- * It is used to track the sentiment analysis result for a given piece of feedback.
+ * Enum representing the processing states of feedback.
+ * Tracks the various stages in the feedback lifecycle, from reception to final processing.
  *
- * - POSITIVE: Indicates that the feedback is positive or favorable.
- * - NEUTRAL: Indicates that the feedback is neutral, neither positive nor negative.
- * - NEGATIVE: Indicates that the feedback is negative or unfavorable.
+ * <ul>
+ *   <li>{@link #RECEIVED}: Feedback has been received and is awaiting transcription.</li>
+ *   <li>{@link #WAITING_FOR_TRANSCRIPTION}: Feedback is waiting to be transcribed.</li>
+ *   <li>{@link #TRANSCRIBED}: Feedback has been transcribed and is awaiting sentiment analysis.</li>
+ *   <li>{@link #WAITING_FOR_SENTIMENT_ANALYSIS}: Transcribed feedback is waiting for sentiment analysis.</li>
+ *   <li>{@link #COMPLETED}: Feedback processing is complete, including transcription and sentiment analysis.</li>
+ * </ul>
  */
 public enum FeedbackStateEnum {
-    /**
-     * Feedback with a positive sentiment.
-     */
-    POSITIVE,
 
     /**
-     * Feedback with a neutral sentiment, neither positive nor negative.
+     * Feedback has been received and is awaiting transcription or analysis.
      */
-    NEUTRAL,
+    RECEIVED,
 
     /**
-     * Feedback with a negative sentiment.
+     * Feedback is waiting to be transcribed.
      */
-    NEGATIVE
+    WAITING_FOR_TRANSCRIPTION,
+
+    /**
+     * Feedback has been successfully transcribed.
+     */
+    TRANSCRIBED,
+
+    /**
+     * Transcribed feedback is waiting for sentiment analysis.
+     */
+    WAITING_FOR_SENTIMENT_ANALYSIS,
+
+    /**
+     * Feedback processing is complete, including transcription and sentiment analysis.
+     */
+    COMPLETED
 }

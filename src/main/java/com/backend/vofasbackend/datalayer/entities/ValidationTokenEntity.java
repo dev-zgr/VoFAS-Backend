@@ -2,8 +2,10 @@ package com.backend.vofasbackend.datalayer.entities;
 
 
 import com.backend.vofasbackend.datalayer.enums.ValidationTokenStateEnum;
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.Data;
+import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
 import java.util.UUID;
@@ -23,7 +25,7 @@ public class ValidationTokenEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
-    @Column(name = "validation_token", nullable = false, unique = true)
+    @Column(name = "validation_tokenID", nullable = false, unique = true)
     private UUID validationToken;
 
     /**
@@ -46,14 +48,18 @@ public class ValidationTokenEntity {
      * The timestamp when the validation token was created.
      * This field tracks when the token was initially generated.
      */
-    @Column(name = "token_create_at", nullable = false)
+    @Column(name = "token_create_at", nullable = false, updatable = false)
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime tokenCreateAt;
 
     /**
      * The timestamp when the validation token was used.
      * This field tracks when the token was used for feedback validation.
      */
-    @Column(name = "token_used_at")
+    @Column(name = "token_used_at", unique = true)
+    @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
+    @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime tokenUsedAt;
 
     /**
@@ -69,7 +75,6 @@ public class ValidationTokenEntity {
      * This constructor is required for JPA to create instances of the entity.
      */
     public ValidationTokenEntity() {
-        // Default initialization (optional)
         this.validationToken = UUID.randomUUID();
         this.validationTokenStateEnum = ValidationTokenStateEnum.VALID;
         this.tokenCreateAt = LocalDateTime.now();

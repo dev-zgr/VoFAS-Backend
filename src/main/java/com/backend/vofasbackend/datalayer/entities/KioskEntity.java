@@ -2,13 +2,14 @@ package com.backend.vofasbackend.datalayer.entities;
 
 import com.backend.vofasbackend.datalayer.enums.KioskStateEnum;
 import jakarta.persistence.*;
+import jakarta.validation.constraints.Max;
+import jakarta.validation.constraints.Min;
 import lombok.Data;
 import lombok.EqualsAndHashCode;
 import lombok.ToString;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.UUID;
 
 /**
  * Entity representing a kiosk in the system where Validation tokens (ie qr codes) are created.
@@ -28,21 +29,21 @@ public class KioskEntity {
      */
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "kiosk_id", nullable = false, unique = true)
-    private Long kioskId;
+    @Column(name = "kiosk_id", nullable = false, unique = true, updatable = false)
+    private Long kioskID;
 
     /**
      * The name of the kiosk.
      * This field can be used for display purposes.
      */
-    @Column(name = "kiosk_name", nullable = false)
+    @Column(name = "kiosk_name", nullable = false, length = 64)
     private String kioskName;
 
     /**
      * A brief description of the kiosk.
      * This field provides additional information about the kiosk.
      */
-    @Column(name = "kiosk_description")
+    @Column(name = "kiosk_description", nullable = false, length = 256)
     private String kioskDescription;
 
     /**
@@ -57,14 +58,16 @@ public class KioskEntity {
      * The key for the kiosk.
      * This key is used to match kiosk with the system.
      */
-    @Column(name = "kiosk_key", nullable = false, unique = true)
-    private UUID kioskKey;
+    @Column(name = "kiosk_key", nullable = false, unique = true, updatable = false)
+    @Max(999999)
+    @Min(0)
+    private Integer kioskKey;
 
     /**
      * List of feedback entities associated with the kiosk.
      * This represents the feedback collected by this specific kiosk.
      */
-    @OneToMany(mappedBy = "kiosk", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    @OneToMany(mappedBy = "feedbackSource", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
     private List<FeedbackEntity> feedbackEntities;
 
     /**

@@ -85,7 +85,7 @@ public class FeedbackControllerBeta {
 
     })
     @GetMapping(value = "/feedback/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public ResponseEntity<Object> streamFeedbacks() {
+    public ResponseEntity<Flux<FeedbackDTO>> streamFeedbacks() {
         List<FeedbackDTO> feedbackList = createRandomFeedbacks();
         Sinks.Many<FeedbackDTO> feedbackSink = Sinks.many().unicast().onBackpressureBuffer();
         Flux.interval(Duration.ofSeconds(1))
