@@ -7,9 +7,10 @@ import com.backend.vofasbackend.presentationlayer.datatransferobjects.Transcript
 
 public class FeedbackMapper {
     public static FeedbackDTO mapFeedbackEntityToFeedbackDTO(FeedbackEntity feedbackEntity, FeedbackDTO feedbackDTO, TranscriptionDTO transcriptionDTO, SentimentAnalysisDTO sentimentAnalysisDTO){
-        feedbackDTO.setFeedbackId(feedbackEntity.getFeedbackId());
+        feedbackDTO.setFeedbackId(feedbackEntity.getFeedbackID());
         feedbackDTO.setFilePath(feedbackEntity.getFilePath());
         feedbackDTO.setFeedbackState(feedbackEntity.getFeedbackState().toString());
+        feedbackDTO.setFeedbackReceivedAt(feedbackEntity.getFeedbackReceivedAt());
         if(feedbackEntity.getTranscription() != null){
             feedbackDTO.setTranscriptionDTO(TranscriptionMapper.mapTranscriptionEntityToTranscriptionDTO(feedbackEntity.getTranscription(),transcriptionDTO));
         }

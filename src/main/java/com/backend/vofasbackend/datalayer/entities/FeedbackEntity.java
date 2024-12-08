@@ -4,6 +4,8 @@ import com.backend.vofasbackend.datalayer.enums.FeedbackStateEnum;
 import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.persistence.*;
 import lombok.*;
+import org.hibernate.annotations.Fetch;
+import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
 
 import java.time.LocalDateTime;
@@ -35,7 +37,7 @@ public class FeedbackEntity {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name = "feedback_id", nullable = false, unique = true, updatable = false)
-    private Long feedbackId;
+    private Long feedbackID;
 
     /**
      * The timestamp when the feedback was uploaded by the user.
@@ -46,15 +48,15 @@ public class FeedbackEntity {
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime feedbackReceivedAt;
 
-    @Column(name = "file_path", nullable = true, updatable = true)
+    @Column(name = "file_path")
     private String filePath;
 
     /**
      * The current state of the processing for the feedback.
      * This tracks the status of actions like transcription, sentiment analysis, etc.
      */
-    @Enumerated(EnumType.STRING)
     @Column(name = "feedback_state", nullable = false)
+    @Enumerated(EnumType.STRING)
     private FeedbackStateEnum feedbackState;
 
     /**
@@ -62,10 +64,12 @@ public class FeedbackEntity {
      * Transcription is linked via the "transcription_id" column.
      */
     @OneToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     @JoinColumn(name = "transcription_id", referencedColumnName = "transcription_id")
     private TranscriptionEntity transcription;
 
     @OneToOne(fetch = FetchType.EAGER)
+    @Fetch(FetchMode.SELECT)
     @JoinColumn(name = "sentiment_id", referencedColumnName = "sentiment_id")
     SentimentAnalysisEntity sentimentAnalysis;
 

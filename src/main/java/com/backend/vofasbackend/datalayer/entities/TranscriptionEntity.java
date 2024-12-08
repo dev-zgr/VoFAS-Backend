@@ -31,7 +31,7 @@ public class TranscriptionEntity {
      * This field is populated after the audio is sent for transcription.
      */
     @Lob
-    @Column(name = "transcription", nullable = false, unique = false, updatable = false)
+    @Column(name = "transcription", nullable = false, updatable = false)
     private String transcription;
 
     /**

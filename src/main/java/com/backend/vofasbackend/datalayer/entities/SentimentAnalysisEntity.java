@@ -31,7 +31,7 @@ public class SentimentAnalysisEntity {
      * The transcription of the audio feedback.
      * Populated after the audio is sent for transcription.
      */
-    @Column(name = "sentiment_state", nullable = false, updatable = false, unique = false)
+    @Column(name = "sentiment_state", nullable = false)
     @Enumerated(EnumType.STRING)
     private SentimentStateEnum sentimentState;
 
@@ -39,7 +39,7 @@ public class SentimentAnalysisEntity {
      * Timestamp when the sentiment analysis request was initiated.
      * Tracks the start of the sentiment analysis process.
      */
-    @Column(name = "analysis_requested_at", nullable = false, updatable = false, unique = false)
+    @Column(name = "analysis_requested_at", nullable = false, updatable = false)
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime analysisRequestedAt;
@@ -48,7 +48,7 @@ public class SentimentAnalysisEntity {
      * Timestamp when the sentiment analysis result was received.
      * Tracks the completion of the sentiment analysis process.
      */
-    @Column(name = "analysis_received_at", nullable = false,updatable = false, unique = false)
+    @Column(name = "analysis_received_at", nullable = false,updatable = false)
     @DateTimeFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")
     private LocalDateTime analysisReceivedAt;

@@ -1,7 +1,6 @@
 package com.backend.vofasbackend.presentationlayer.controllers.v1;
 
 import com.backend.vofasbackend.contants.FeedbackConstants;
-import com.backend.vofasbackend.datalayer.entities.FeedbackEntity;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ErrorResponseDTO;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.FeedbackDTO;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.ResponseDTO;
@@ -13,6 +12,7 @@ import io.swagger.v3.oas.annotations.media.Schema;
 import io.swagger.v3.oas.annotations.responses.ApiResponse;
 import io.swagger.v3.oas.annotations.responses.ApiResponses;
 import io.swagger.v3.oas.annotations.tags.Tag;
+import org.springframework.data.domain.Page;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
@@ -52,7 +52,7 @@ import java.util.UUID;
 @CrossOrigin(origins = "${VoFAS.crossorigin.url}")
 public class FeedbackControllerV1 {
 
-    private FeedbackService feedbackService;
+    private final FeedbackService feedbackService;
 
     public FeedbackControllerV1(FeedbackService feedbackService) {
         this.feedbackService = feedbackService;
@@ -69,13 +69,6 @@ public class FeedbackControllerV1 {
                             "recently processed feedbacks are streaming to VoFAS Frontend."
             ),
             @ApiResponse(
-                    responseCode = "404",
-                    description = "There are is live feedback to stream nor no feedbacks to send to user",
-                    content = @Content(
-                            schema = @Schema(implementation = ErrorResponseDTO.class)
-                    )
-            ),
-            @ApiResponse(
                     responseCode = "500",
                     description = "Internal Server Error. This response maybe caused by any Java exception",
                     content = @Content(
@@ -85,8 +78,8 @@ public class FeedbackControllerV1 {
 
     })
     @GetMapping(value = "/feedback/stream", produces = MediaType.TEXT_EVENT_STREAM_VALUE)
-    public Flux<FeedbackEntity> streamFeedbacks() {
-        return feedbackService.getFeedbackStream();
+    public Flux<FeedbackDTO> streamFeedbacks() {
+        return  feedbackService.getFeedbackStream();
     }
 
     @Operation(
@@ -117,7 +110,7 @@ public class FeedbackControllerV1 {
 
     })
     @GetMapping(value = "/feedback", produces = MediaType.APPLICATION_JSON_VALUE)
-    public ResponseEntity<Object> getFeedbacks(
+    public ResponseEntity<Page<FeedbackDTO>> getFeedbacks(
             @Parameter(description = "The page number for pagination", example = "1")
             @RequestParam(name = "page-no", defaultValue = "0") int pageNumber,
 
@@ -127,10 +120,29 @@ public class FeedbackControllerV1 {
             @Parameter(description = "Specifies if the sorting is ascending (true) or descending (false)", example = "true")
             @RequestParam(name = "ascending", defaultValue = "false", required = false) boolean ascending,
 
-            @Parameter(description = "A keyword to filter feedbacks", example = "feedbackState:positive")
-            @RequestParam(name = "filter", defaultValue = "", required = false) String filter
+            @Parameter(description = "A keyword to filtering feedbacks by start date", example = "2024-12-04")
+            @RequestParam(name = "start-date", required = false) String startDate,
+
+            @Parameter(description = "A keyword to filtering feedbacks by start date", example = "2024-12-04")
+            @RequestParam(name = "end-date", required = false) String endDate,
+
+            @Parameter(description = "A keyword to filtering feedbacks by feedback state", example = "2024-12-04")
+            @RequestParam(name = "feedback-state",  required = false) String feedbackState,
+
+            @Parameter(description = "A keyword to filtering feedbacks by feedback sentiment analysis state", example = "2024-12-04")
+            @RequestParam(name = "sentiment-state", required = false) String sentimentState
+
     ) {
-        return null;
+        Page<FeedbackDTO> feedbacks = feedbackService.getFeedbacks(pageNumber, sortBy, ascending, startDate, endDate,feedbackState,sentimentState);
+        if (feedbacks.isEmpty()) {
+            return ResponseEntity
+                    .status(HttpStatus.NOT_FOUND)
+                    .build();
+        }else{
+            return ResponseEntity
+                    .status(HttpStatus.OK)
+                    .body(feedbacks);
+        }
     }
 
 
