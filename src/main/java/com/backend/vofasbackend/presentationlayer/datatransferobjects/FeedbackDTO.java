@@ -8,6 +8,7 @@ import jakarta.persistence.Column;
 import lombok.*;
 
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * DTO class for transferring feedback data.
@@ -31,6 +32,13 @@ public class FeedbackDTO {
 
     @Schema(description = "file path that is store ", example = "/Users/ozgurkamali/Desktop/VoFAS_Feedback/feedback_6.mp3")
     private String filePath;
+
+    @Schema(description = "file hash of the file specified in filepath", example = "d6s7a8b87asd678asd90das")
+    private String fileHash;
+
+    @Schema(description = "duration of the recorded feedback audio file in seconds", example = " 10.5s")
+    @JsonFormat(pattern = "mm:ss")
+    private LocalTime feedbackDuration;
 
     @Schema(description = "Current state of the feedback", example = "TRANSCRIBED")
     private String feedbackState;

@@ -1,6 +1,7 @@
 package com.backend.vofasbackend.datalayer.entities;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
+import io.swagger.v3.oas.annotations.media.Schema;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -33,6 +34,9 @@ public class TranscriptionEntity {
     @Lob
     @Column(name = "transcription", nullable = false, updatable = false)
     private String transcription;
+
+    @Column(name = "transcription_hash", nullable = false, updatable = false)
+    private String transcriptionHash;
 
     /**
      * The timestamp when the transcription request was sent for the audio file.

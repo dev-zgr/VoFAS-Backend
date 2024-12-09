@@ -4,11 +4,15 @@ import com.backend.vofasbackend.exceptions.exceptions.InvalidFilterOptionExcepti
 import com.backend.vofasbackend.exceptions.exceptions.ResourceNotFoundException;
 import com.backend.vofasbackend.exceptions.exceptions.UnsupportedMediaTypeException;
 import com.backend.vofasbackend.presentationlayer.datatransferobjects.FeedbackDTO;
+import com.mpatric.mp3agic.InvalidDataException;
+import com.mpatric.mp3agic.UnsupportedTagException;
 import org.springframework.data.domain.Page;
 import org.springframework.web.multipart.MultipartFile;
 import reactor.core.publisher.Flux;
 import reactor.core.publisher.Mono;
 
+import javax.sound.sampled.UnsupportedAudioFileException;
+import java.io.IOException;
 import java.util.UUID;
 
 public interface FeedbackService {

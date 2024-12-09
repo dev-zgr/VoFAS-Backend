@@ -32,6 +32,12 @@ public class TranscriptionDTO {
     private String transcription;
 
     /**
+     * SHA-256 Hash of transcription
+     */
+    @Schema(description = "The hash for the transcription text", example = "43njk42k53h3454khk")
+    private String transcriptionHash;
+
+    /**
      * The timestamp when the transcription was requested.
      */
     @JsonFormat(pattern = "dd-MM-yyyy HH:mm:ss")

@@ -8,7 +8,9 @@ import org.hibernate.annotations.Fetch;
 import org.hibernate.annotations.FetchMode;
 import org.springframework.format.annotation.DateTimeFormat;
 
+import java.time.Duration;
 import java.time.LocalDateTime;
+import java.time.LocalTime;
 
 /**
  * Entity representing a feedback submission, typically containing an audio file
@@ -50,6 +52,12 @@ public class FeedbackEntity {
 
     @Column(name = "file_path")
     private String filePath;
+
+    @Column(name = "file_hash")
+    String file_hash;
+
+    @Column(name = "feedback_duration")
+    private Duration feedbackDuration;
 
     /**
      * The current state of the processing for the feedback.

@@ -8,6 +8,7 @@ public class TranscriptionMapper {
         transcriptionDTO.setTranscription(transcriptionEntity.getTranscription());
         transcriptionDTO.setTranscriptionRequestedAt(transcriptionEntity.getTranscriptionRequestedAt());
         transcriptionDTO.setTranscriptionReceivedAt(transcriptionEntity.getTranscriptionReceivedAt());
+        transcriptionDTO.setTranscriptionHash(transcriptionEntity.getTranscriptionHash());
         return transcriptionDTO;
     }
 }

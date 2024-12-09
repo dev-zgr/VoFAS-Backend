@@ -15,6 +15,8 @@ import com.backend.vofasbackend.servicelayer.interfaces.FeedbackService;
 import com.backend.vofasbackend.servicelayer.mappers.FeedbackMapper;
 import com.backend.vofasbackend.servicelayer.mappers.KioskMapper;
 import com.backend.vofasbackend.servicelayer.mappers.ValidationTokenMapper;
+import com.backend.vofasbackend.servicelayer.tools.HashTool;
+import com.mpatric.mp3agic.Mp3File;
 import jakarta.annotation.PostConstruct;
 import jakarta.transaction.Transactional;
 import org.springframework.ai.audio.transcription.AudioTranscriptionPrompt;
@@ -35,10 +37,13 @@ import reactor.core.publisher.Mono;
 import reactor.core.publisher.Sinks;
 import reactor.core.scheduler.Schedulers;
 
+import javax.sound.sampled.AudioFileFormat;
+import javax.sound.sampled.AudioSystem;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
+import java.time.Duration;
 import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;
@@ -127,10 +132,25 @@ public class FeedbackServiceImpl implements FeedbackService {
                 Path path = Paths.get(filePath, newFilename);
                 Files.createDirectories(path.getParent());
                 file.transferTo(path.toFile());
-                Optional<FeedbackEntity> feedbackEntityOptional = feedbackRepository.getFeedbackEntityByFeedbackID(feedbackId);
+
+                String contentType = file.getContentType();
+                String filename = file.getOriginalFilename();
+                Duration feedbackDuration = null;
+                if(contentType.equals("audio/mpeg") || filename.toLowerCase().endsWith(".mp3")){
+                    Mp3File mp3File = new Mp3File(path);
+                    feedbackDuration = Duration.ofSeconds(mp3File.getLengthInSeconds());
+                }else if(contentType.equals("audio/wav") || filename.toLowerCase().endsWith(".wav")){
+                    AudioFileFormat audioFileFormat = AudioSystem.getAudioFileFormat(path.toFile());
+                    feedbackDuration = Duration.ofSeconds(Math.round(audioFileFormat.getFrameLength()  / audioFileFormat.getFormat().getFrameRate()));
+                }
+
+
+                    Optional<FeedbackEntity> feedbackEntityOptional = feedbackRepository.getFeedbackEntityByFeedbackID(feedbackId);
                 if (feedbackEntityOptional.isPresent()) {
                     FeedbackEntity feedbackEntity = feedbackEntityOptional.get();
                     feedbackEntity.setFilePath(path.toString());
+                    feedbackEntity.setFile_hash(HashTool.hashFile(path.toFile()));
+                    feedbackEntity.setFeedbackDuration(feedbackDuration);
                     feedbackRepository.save(feedbackEntity);
                 }
                 return feedbackId;
@@ -155,6 +175,7 @@ public class FeedbackServiceImpl implements FeedbackService {
                 transcriptionEntity.setTranscriptionReceivedAt(LocalDateTime.now());
                 transcriptionEntity.setTranscription(response.getResult().getOutput());
                 transcriptionEntity.setFeedback(feedbackEntity);
+                transcriptionEntity.setTranscriptionHash(HashTool.hashString(transcriptionEntity.getTranscription()));
                 feedbackEntity.setTranscription(transcriptionEntity);
                 feedbackEntity.setFeedbackState(FeedbackStateEnum.TRANSCRIBED);
                 transcriptionRepository.save(transcriptionEntity);

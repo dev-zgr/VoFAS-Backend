@@ -235,4 +235,6 @@ public class FeedbackControllerV1 {
     }
 
 
+    // TODO add hash field to feedbacks & transcription
+    // TODO add checked table
 }
